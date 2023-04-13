@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
@@ -130,6 +131,19 @@ fun ShipCardView(ship: Ship, onElementClick: (Int) -> Unit) {
 }
 
 @Composable
+fun RenderShip(
+
+) {
+    AndroidView(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp),
+        factory = { context ->
+            G3DView(context)
+        })
+}
+
+@Composable
 fun ShipInfoView(viewModel: ShipViewModel = hiltViewModel()) {
 
     val res = viewModel.ship.value
@@ -147,16 +161,8 @@ fun ShipInfoView(viewModel: ShipViewModel = hiltViewModel()) {
 
             BlueCard {
 
-                Column(
-                ) {
-                    Image(
-                        painter = rememberImagePainter(data = "https://www.awicons.com/free-icons/download/tv-movie-icons/star-wars-icons-by-archigraphs/png/128/XWing_archigraphs.png"),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(200.dp)
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.Fit
-                    )
+                Column {
+                    RenderShip()
                     Text(
                         text = ship.name,
                         style = MaterialTheme.typography.h1,

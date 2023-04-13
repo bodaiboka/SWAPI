@@ -22,7 +22,6 @@ import com.rbodai.icellswapi.presentation.viewmodels.PlanetListViewModel
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.outlined.Info
 
-
 @Composable
 fun PlanetListView(viewModel: PlanetListViewModel = hiltViewModel(), navController: NavController) {
     val res = viewModel.planets.value
@@ -163,9 +162,7 @@ fun PlanetInfoView(viewModel: PlanetListViewModel = hiltViewModel(), id: Int) {
         LoadingMessage()
     }
     if (res.error.isNotBlank()) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(text = res.error, modifier = Modifier.align(Alignment.Center))
-        }
+        ErrorMessage(res.error)
     }
     res.data?.let {
         val planet = it.get(id)!!
