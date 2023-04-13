@@ -4,6 +4,7 @@ data class Planet (
     val name: String,
     val url: String,
     val terrain: String,
-    val population: Int,
-    val diameter: Int
+    val population: String,
+    val diameter: String,
+    val id: Int
 )

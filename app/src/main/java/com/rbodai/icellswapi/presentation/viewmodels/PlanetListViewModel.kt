@@ -10,11 +10,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
+import javax.inject.Singleton
 
 @HiltViewModel
 class PlanetListViewModel @Inject constructor(private val getPlanetsUseCase: GetPlanetsUseCase) :
     ViewModel() {
 
+    @Singleton
     val planets = mutableStateOf(PlanetsStateHolder())
 
     init {

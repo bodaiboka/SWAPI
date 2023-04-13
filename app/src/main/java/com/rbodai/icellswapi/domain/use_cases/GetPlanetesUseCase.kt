@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class GetPlanetsUseCase @Inject constructor(private val getPlanetsRepo: SwapiRepo) {
 
-    operator fun invoke(): Flow<Resource<List<Planet>>> = flow {
+    operator fun invoke(): Flow<Resource<Map<Int, Planet>>> = flow {
         emit(Resource.Loading(""))
         try {
             emit(Resource.Success(getPlanetsRepo.getPlanets()))

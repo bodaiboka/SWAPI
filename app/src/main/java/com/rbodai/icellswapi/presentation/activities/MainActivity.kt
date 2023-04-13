@@ -13,7 +13,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.rbodai.icellswapi.R
-import com.rbodai.icellswapi.presentation.views.PlanetListView
+import com.rbodai.icellswapi.presentation.Navigation
 import com.rbodai.icellswapi.ui.theme.SWAPITheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,9 +28,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     MainScreen {
-                        PlanetListView() {
-
-                        }
+                        Navigation()
                     }
                 }
             }
@@ -55,9 +53,7 @@ fun MainScreen(content: @Composable () -> Unit) {
 fun DefaultPreview() {
     SWAPITheme {
         MainScreen {
-            PlanetListView() {
-
-            }
+            Navigation()
         }
     }
 }

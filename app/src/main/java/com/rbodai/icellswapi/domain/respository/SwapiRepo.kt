@@ -4,6 +4,6 @@ import com.rbodai.icellswapi.domain.model.Planet
 
 interface SwapiRepo {
 
-    suspend fun getPlanets():List<Planet>
+    suspend fun getPlanets():Map<Int, Planet>
 
 }
