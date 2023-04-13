@@ -1,18 +1,18 @@
 package com.rbodai.icellswapi.domain.use_cases
 
 import com.rbodai.icellswapi.data.api.Resource
-import com.rbodai.icellswapi.domain.model.Planet
+import com.rbodai.icellswapi.domain.model.Ship
 import com.rbodai.icellswapi.domain.respository.SwapiRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetPlanetsUseCase @Inject constructor(private val swapiRepo: SwapiRepo) {
+class GetShipUseCase @Inject constructor(private val swapiRepo: SwapiRepo) {
 
-    operator fun invoke(): Flow<Resource<Map<Int, Planet>>> = flow {
+    operator fun invoke(id: Int): Flow<Resource<Ship>> = flow {
         emit(Resource.Loading(""))
         try {
-            emit(Resource.Success(swapiRepo.getPlanets()))
+            emit(Resource.Success(swapiRepo.getShip(id)))
 
         } catch (e: Exception) {
             emit(Resource.Error(e.message))

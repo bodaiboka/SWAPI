@@ -4,34 +4,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rbodai.icellswapi.data.api.Resource
-import com.rbodai.icellswapi.domain.use_cases.GetPlanetsUseCase
-import com.rbodai.icellswapi.presentation.viewstates.PlanetsStateHolder
+import com.rbodai.icellswapi.domain.use_cases.GetShipsUseCase
+import com.rbodai.icellswapi.presentation.viewstates.ShipsStateHolder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class PlanetListViewModel @Inject constructor(private val getPlanetsUseCase: GetPlanetsUseCase) :
+class ShipListViewModel @Inject constructor(private val getShipsUseCase: GetShipsUseCase) :
     ViewModel() {
 
-    val planets = mutableStateOf(PlanetsStateHolder())
+    val ships = mutableStateOf(ShipsStateHolder())
 
     init {
-        getPlanets()
+        getShips()
     }
 
-    fun getPlanets() {
-        getPlanetsUseCase().onEach {
+    fun getShips() {
+        getShipsUseCase().onEach {
             when (it) {
                 is Resource.Loading -> {
-                    planets.value = PlanetsStateHolder(isLoading = true)
+                    ships.value = ShipsStateHolder(isLoading = true)
                 }
                 is Resource.Success -> {
-                    planets.value = PlanetsStateHolder(data = it.data)
+                    ships.value = ShipsStateHolder(data = it.data)
                 }
                 is Resource.Error -> {
-                    planets.value = PlanetsStateHolder(error = it.message.toString())
+                    ships.value = ShipsStateHolder(error = it.message.toString())
                 }
             }
         }.launchIn(viewModelScope)
