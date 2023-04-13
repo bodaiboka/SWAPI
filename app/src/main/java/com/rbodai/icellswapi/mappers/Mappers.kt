@@ -15,7 +15,10 @@ fun List<PlanetDTO>.toDomainPlanets():Map<Int, Planet> {
             terrain = it.terrain ?: "",
             population = it.population ?:"",
             diameter = it.diameter ?:"",
-            id = it.url?.split("/")?.get(5)?.toInt()!!
+            id = it.url?.split("/")?.get(5)?.toInt()!!,
+            orbital_period = it.orbital_period ?:"",
+            climate = it.climate ?:"",
+            rotation_period = it.rotation_period ?:""
         )
     }.associateBy { it.id }
 }

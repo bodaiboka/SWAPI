@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
-import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,36 +17,36 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.rbodai.icellswapi.presentation.Screen
+import com.rbodai.icellswapi.presentation.navigation.Screens
 import com.rbodai.icellswapi.presentation.viewmodels.PlanetListViewModel
 import androidx.compose.foundation.lazy.items
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.tooling.preview.Preview
-import com.rbodai.icellswapi.domain.model.Planet
+import androidx.compose.material.icons.outlined.Info
+
 
 @Composable
 fun PlanetListView(viewModel: PlanetListViewModel = hiltViewModel(), navController: NavController) {
     val res = viewModel.planets.value
     if (res.isLoading) {
-        Box(modifier = Modifier.fillMaxSize())
-        {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
+        LoadingMessage()
     }
     if (res.error.isNotBlank()) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(text = res.error, modifier = Modifier.align(Alignment.Center))
-        }
+        ErrorMessage(res.error)
+
     }
     res.data?.let {
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
 
-            items(it.toList()) {
-                PlanetCardView(id = it.first) { id ->
-                    navController.navigate(Screen.PlanetInfoScreen.itineraire + "/" + id)
+                items(it.toList()) {
+                    PlanetCardView(id = it.first) { id ->
+                        navController.navigate(Screens.PlanetInfoScreen.itineraire + "/" + id)
+                    }
                 }
             }
         }
@@ -57,16 +56,7 @@ fun PlanetListView(viewModel: PlanetListViewModel = hiltViewModel(), navControll
 @Composable
 fun PlanetCardView(viewModel: PlanetListViewModel = hiltViewModel(), id: Int, onElementClick: (Int) -> Unit) {
     val planet = viewModel.planets.value.data?.get(id)!!
-    Card(
-        modifier = Modifier
-            .padding(start = 50.dp, end = 50.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        shape = MaterialTheme.shapes.medium,
-        elevation = 5.dp,
-        backgroundColor = MaterialTheme.colors.primary,
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.primaryVariant)
-    ) {
+    BlueCard {
         Row(
             modifier = Modifier
                 .height(100.dp)
@@ -87,10 +77,12 @@ fun PlanetCardView(viewModel: PlanetListViewModel = hiltViewModel(), id: Int, on
                 ) {
                     Text(
                         text = planet.name,
-                        style = MaterialTheme.typography.h1
+                        style = MaterialTheme.typography.h2,
+                        color = MaterialTheme.colors.secondary
                     )
+                    Spacer(modifier = Modifier.width(10.dp))
                     Image(
-                        painter = rememberImagePainter(data = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/DesertPlanet.jpg/250px-DesertPlanet.jpg"),
+                        painter = rememberImagePainter(data = "https://jkhub.org/wiki/images/0/01/Tatooine.png"),
                         contentDescription = null,
                         modifier = Modifier
                             .height(32.dp),
@@ -111,16 +103,18 @@ fun PlanetCardView(viewModel: PlanetListViewModel = hiltViewModel(), id: Int, on
                     Text(
                         text = planet.population,
                         fontSize = 10.sp,
+                        color = MaterialTheme.colors.secondary
                     )
                     Spacer(modifier = Modifier.width(24.dp))
-                    Icon(imageVector = Icons.Outlined.LocationOn,
+                    Icon(imageVector = Icons.Outlined.Info,
                         contentDescription = "diameter",
 
                         tint = Color.White
                     )
                     Text(
-                        text = planet.diameter,
+                        text = planet.diameter + " km",
                         fontSize = 10.sp,
+                        color = MaterialTheme.colors.secondary
                     )
                 }
             }
@@ -141,81 +135,32 @@ fun PlanetCardView(viewModel: PlanetListViewModel = hiltViewModel(), id: Int, on
 
 }
 
-@Preview(showBackground = true)
 @Composable
-fun PlanetInfoTest() {
-    val planet = Planet("Tatooine", "", "", "10000", "123456", 1)
-    Row(
-        modifier = Modifier.fillMaxHeight()
+fun Info(label: String, value: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        Card(
-            shape = MaterialTheme.shapes.medium,
-            elevation = 5.dp,
-            backgroundColor = MaterialTheme.colors.primary,
-            border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.primaryVariant),
-            modifier = Modifier
-                .padding(start = 50.dp, end = 50.dp)
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.CenterVertically)
-        ) {
-
-            Column(
-            ) {
-//                Image(
-//                    painter = rememberImagePainter(data = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/DesertPlanet.jpg/250px-DesertPlanet.jpg"),
-//                    contentDescription = null,
-//                    modifier = Modifier
-//                        .height(200.dp)
-//                        .fillMaxWidth(),
-//                    contentScale = ContentScale.Fit
-//                )
-                Canvas(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                ) {
-                    val canvasQuadrantSize = size
-                    drawRect(
-                        color = Color.Magenta,
-                        size = canvasQuadrantSize
-                    )
-                }
-                Text(
-                    text = planet.name,
-                    style = MaterialTheme.typography.h1,
-                    modifier = Modifier
-                        .align(alignment = Alignment.CenterHorizontally)
-                        .drawBehind {
-                            val canvasQuadrantSize = size
-                            drawRect(
-                                color = Color.Magenta,
-                                size = canvasQuadrantSize
-                            )
-                        })
-
-                Text(
-                    text = "Population",
-                    color = MaterialTheme.colors.primaryVariant,
-                    modifier = Modifier
-                        .align(alignment = Alignment.Start)
-                )
-            }
-        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.h3,
+            color = MaterialTheme.colors.primaryVariant,
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.body1,
+            color = MaterialTheme.colors.secondary,
+        )
+        Spacer(modifier = Modifier
+            .height(10.dp))
     }
 }
-
 
 @Composable
 fun PlanetInfoView(viewModel: PlanetListViewModel = hiltViewModel(), id: Int) {
 
     val res = viewModel.planets.value
     if (res.isLoading) {
-        Box(modifier = Modifier.fillMaxSize())
-        {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
+        LoadingMessage()
     }
     if (res.error.isNotBlank()) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -225,25 +170,19 @@ fun PlanetInfoView(viewModel: PlanetListViewModel = hiltViewModel(), id: Int) {
     res.data?.let {
         val planet = it.get(id)!!
         Row(
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier.fillMaxHeight(),
+            verticalAlignment = Alignment.CenterVertically
+
         ) {
 
-            Card(
-                shape = MaterialTheme.shapes.medium,
-                elevation = 5.dp,
-                backgroundColor = MaterialTheme.colors.primary,
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.primaryVariant),
-                modifier = Modifier
-                    .padding(start = 50.dp, end = 50.dp)
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .align(Alignment.CenterVertically)
-            ) {
+            BlueCard() {
 
                 Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
-                        painter = rememberImagePainter(data = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/DesertPlanet.jpg/250px-DesertPlanet.jpg"),
+                        painter = rememberImagePainter(data = "https://jkhub.org/wiki/images/0/01/Tatooine.png"),
                         contentDescription = null,
                         modifier = Modifier
                             .height(200.dp)
@@ -253,25 +192,25 @@ fun PlanetInfoView(viewModel: PlanetListViewModel = hiltViewModel(), id: Int) {
                     Text(
                         text = planet.name,
                         style = MaterialTheme.typography.h1,
+                        color = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(alignment = Alignment.CenterHorizontally)
                     )
-                    Column(
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .align(alignment = Alignment.Start),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Population",
-                            style = MaterialTheme.typography.h2,
-                            color = MaterialTheme.colors.primaryVariant,
-                        )
-                        Text(
-                            text = planet.population,
-                            style = MaterialTheme.typography.body1,
-                            color = MaterialTheme.colors.secondary,
-                        )
+                    Spacer(modifier = Modifier
+                        .height(20.dp))
+
+                        Info(label = "Population", value = planet.population)
+                        Info(label = "Diameter", value = planet.diameter)
+                        Info(label = "Terrain", value = planet.terrain)
+                        Info(label = "Climate", value = planet.climate)
+                        Info(label = "Terrain", value = planet.terrain)
+                        Info(label = "Climate", value = planet.climate)
+                        Info(label = "Orbital period", value = planet.orbital_period)
+                        Info(label = "Rotation period", value = planet.rotation_period)
+
+
+                        Spacer(modifier = Modifier
+                            .height(20.dp))
                     }
 
                 }
@@ -279,4 +218,3 @@ fun PlanetInfoView(viewModel: PlanetListViewModel = hiltViewModel(), id: Int) {
         }
     }
 
-}

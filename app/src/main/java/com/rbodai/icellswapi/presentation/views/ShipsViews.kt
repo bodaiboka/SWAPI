@@ -1,6 +1,5 @@
 package com.rbodai.icellswapi.presentation.views
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,7 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.rbodai.icellswapi.domain.model.Ship
-import com.rbodai.icellswapi.presentation.Screen
+import com.rbodai.icellswapi.presentation.navigation.Screens
 import com.rbodai.icellswapi.presentation.viewmodels.ShipListViewModel
 import com.rbodai.icellswapi.presentation.viewmodels.ShipViewModel
 
@@ -30,15 +29,10 @@ import com.rbodai.icellswapi.presentation.viewmodels.ShipViewModel
 fun ShipListView(viewModel: ShipListViewModel = hiltViewModel(), navController: NavController) {
     val res = viewModel.ships.value
     if (res.isLoading) {
-        Box(modifier = Modifier.fillMaxSize())
-        {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
+        LoadingMessage()
     }
     if (res.error.isNotBlank()) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(text = res.error, modifier = Modifier.align(Alignment.Center))
-        }
+        ErrorMessage(error = res.error)
     }
     res.data?.let {
         LazyColumn(
@@ -48,7 +42,7 @@ fun ShipListView(viewModel: ShipListViewModel = hiltViewModel(), navController: 
 
             items(it) {
                 ShipCardView(ship = it) { id ->
-                    navController.navigate(Screen.ShipInfoScreen.itineraire + "/" + id)
+                    navController.navigate(Screens.ShipInfoScreen.itineraire + "/" + id)
                 }
             }
         }
@@ -57,16 +51,7 @@ fun ShipListView(viewModel: ShipListViewModel = hiltViewModel(), navController: 
 
 @Composable
 fun ShipCardView(ship: Ship, onElementClick: (Int) -> Unit) {
-    Card(
-        modifier = Modifier
-            .padding(start = 50.dp, end = 50.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        shape = MaterialTheme.shapes.medium,
-        elevation = 5.dp,
-        backgroundColor = MaterialTheme.colors.primary,
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.primaryVariant)
-    ) {
+    BlueCard {
         Row(
             modifier = Modifier
                 .height(100.dp)
@@ -87,10 +72,12 @@ fun ShipCardView(ship: Ship, onElementClick: (Int) -> Unit) {
                 ) {
                     Text(
                         text = ship.name,
-                        style = MaterialTheme.typography.h1
+                        style = MaterialTheme.typography.h2,
+                        color = MaterialTheme.colors.secondary
                     )
+                    Spacer(modifier = Modifier.width(10.dp))
                     Image(
-                        painter = rememberImagePainter(data = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/DesertPlanet.jpg/250px-DesertPlanet.jpg"),
+                        painter = rememberImagePainter(data = "https://www.awicons.com/free-icons/download/tv-movie-icons/star-wars-icons-by-archigraphs/png/128/XWing_archigraphs.png"),
                         contentDescription = null,
                         modifier = Modifier
                             .height(32.dp),
@@ -104,23 +91,25 @@ fun ShipCardView(ship: Ship, onElementClick: (Int) -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(imageVector = Icons.Outlined.Person,
-                        contentDescription = "population",
+                        contentDescription = "crew",
 
                         tint = Color.White
                     )
                     Text(
                         text = ship.crew,
                         fontSize = 10.sp,
+                        color = MaterialTheme.colors.secondary
                     )
                     Spacer(modifier = Modifier.width(24.dp))
                     Icon(imageVector = Icons.Outlined.LocationOn,
-                        contentDescription = "diameter",
+                        contentDescription = "length",
 
                         tint = Color.White
                     )
                     Text(
-                        text = ship.length,
+                        text = ship.length + " m",
                         fontSize = 10.sp,
+                        color = MaterialTheme.colors.secondary
                     )
                 }
             }
@@ -145,15 +134,10 @@ fun ShipInfoView(viewModel: ShipViewModel = hiltViewModel()) {
 
     val res = viewModel.ship.value
     if (res.isLoading) {
-        Box(modifier = Modifier.fillMaxSize())
-        {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
+        LoadingMessage()
     }
     if (res.error.isNotBlank()) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text(text = res.error, modifier = Modifier.align(Alignment.Center))
-        }
+        ErrorMessage(error = res.error)
     }
     res.data?.let {
         val ship = it
@@ -161,22 +145,12 @@ fun ShipInfoView(viewModel: ShipViewModel = hiltViewModel()) {
             modifier = Modifier.fillMaxHeight()
         ) {
 
-            Card(
-                shape = MaterialTheme.shapes.medium,
-                elevation = 5.dp,
-                backgroundColor = MaterialTheme.colors.primary,
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.primaryVariant),
-                modifier = Modifier
-                    .padding(start = 50.dp, end = 50.dp)
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .align(Alignment.CenterVertically)
-            ) {
+            BlueCard {
 
                 Column(
                 ) {
                     Image(
-                        painter = rememberImagePainter(data = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/DesertPlanet.jpg/250px-DesertPlanet.jpg"),
+                        painter = rememberImagePainter(data = "https://www.awicons.com/free-icons/download/tv-movie-icons/star-wars-icons-by-archigraphs/png/128/XWing_archigraphs.png"),
                         contentDescription = null,
                         modifier = Modifier
                             .height(200.dp)
@@ -186,6 +160,7 @@ fun ShipInfoView(viewModel: ShipViewModel = hiltViewModel()) {
                     Text(
                         text = ship.name,
                         style = MaterialTheme.typography.h1,
+                        color = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(alignment = Alignment.CenterHorizontally)
                     )
@@ -197,7 +172,7 @@ fun ShipInfoView(viewModel: ShipViewModel = hiltViewModel()) {
                     ) {
                         Text(
                             text = "Crew",
-                            style = MaterialTheme.typography.h2,
+                            style = MaterialTheme.typography.h3,
                             color = MaterialTheme.colors.primaryVariant,
                         )
                         Text(
