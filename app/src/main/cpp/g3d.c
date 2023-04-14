@@ -141,5 +141,6 @@ Java_com_rbodai_icellswapi_presentation_views_G3DView_getpolylines(JNIEnv *env, 
     jvertices = (*env)->NewFloatArray(env, (f->n + 1) * 2);
     (*env)->SetFloatArrayRegion(env, jvertices, 0, (f->n + 1) * 2, vertices);
     free(vertices);
+    la_delmatrix(vertex);
     return jvertices;
 }

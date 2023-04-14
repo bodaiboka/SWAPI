@@ -21,13 +21,15 @@ class G3DView(context: Context) : View(context) {
     external fun getpoly(model: Long, face: Int): FloatArray?
     external fun getpolylines(model: Long, face: Int): FloatArray?
 
-    var model: Long = 0
+    var model: Long = 0L
     var paint: Paint? = null
     var theta = 0f
 
     fun loadModel(path: String) {
-        model = openModel(path + "/tie.obj")
-        loadModel(model)
+        if (model == 0L) {
+            model = openModel(path + "/tie.obj")
+            loadModel(model)
+        }
         initmatrices()
         paint = Paint()
         paint!!.color = Color.argb(255, 255, 255, 255)
