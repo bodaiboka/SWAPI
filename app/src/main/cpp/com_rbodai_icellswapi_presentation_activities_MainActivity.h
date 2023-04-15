@@ -59,7 +59,7 @@ JNIEXPORT void JNICALL Java_com_rbodai_icellswapi_presentation_views_G3DView_ini
  * Signature: (F)V
  */
 JNIEXPORT void JNICALL Java_com_rbodai_icellswapi_presentation_views_G3DView_transRY
-        (JNIEnv *, jobject, jfloat);
+        (JNIEnv *, jobject, jfloat, jfloat, jfloat, jfloat);
 
 /*
  * Class:     test_TestNative

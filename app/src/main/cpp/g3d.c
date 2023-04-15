@@ -69,7 +69,7 @@ Java_com_rbodai_icellswapi_presentation_views_G3DView_initmatrices(JNIEnv *env, 
 }
 
 JNIEXPORT void JNICALL
-Java_com_rbodai_icellswapi_presentation_views_G3DView_transRY(JNIEnv *env, jobject thiz, jfloat theta) {
+Java_com_rbodai_icellswapi_presentation_views_G3DView_transRY(JNIEnv *env, jobject thiz, jfloat theta, jfloat tx, jfloat ty, jfloat s) {
     Matrix *R, *S, *TR, *C;
 
     la_identity(T);
@@ -78,8 +78,8 @@ Java_com_rbodai_icellswapi_presentation_views_G3DView_transRY(JNIEnv *env, jobje
     S = la_initmatrix(4, 4);
     TR = la_initmatrix(4, 4);
     la_rotate3y(R, theta);
-    la_scale3(S, 100, -100, 100);
-    la_translate3(TR, 350, 350, 0);
+    la_scale3(S, s, -s, s);
+    la_translate3(TR, tx, ty, 0);
     la_multmatrices(R, T, C);
     la_delmatrix(T);
     T = C;
@@ -129,17 +129,18 @@ Java_com_rbodai_icellswapi_presentation_views_G3DView_getpolylines(JNIEnv *env, 
     vertex = la_initmatrix(4, 1);
     model = (Model*)pmodel;
     f = model->faces[face];
-    vertices = (jfloat*)malloc( (f->n + 1) * 2 * sizeof(jfloat) );
-    for( i = 0; i < f->n; i++ )
+    vertices = (jfloat*)malloc( (f->n) * 4 * sizeof(jfloat) );
+    for( i = 0; i < f->n-1; i++ )
     {
         la_multmatrices(T, model->vertices[f->vertices[i] - 1], vertex);
-        vertices[i * 2] = vertex->e[0][0];
-        vertices[i * 2 + 1] = vertex->e[1][0];
+        vertices[i * 4] = vertex->e[0][0];
+        vertices[i * 4 + 1] = vertex->e[1][0];
+        la_multmatrices(T, model->vertices[f->vertices[(i+1) % f->n] - 1], vertex);
+        vertices[i * 4 + 2] = vertex->e[0][0];
+        vertices[i * 4 + 3] = vertex->e[1][0];
     }
-    vertices[f->n * 2] = vertices[0];
-    vertices[f->n * 2 + 1] = vertices[1];
-    jvertices = (*env)->NewFloatArray(env, (f->n + 1) * 2);
-    (*env)->SetFloatArrayRegion(env, jvertices, 0, (f->n + 1) * 2, vertices);
+    jvertices = (*env)->NewFloatArray(env, (f->n) * 4);
+    (*env)->SetFloatArrayRegion(env, jvertices, 0, (f->n) * 4, vertices);
     free(vertices);
     la_delmatrix(vertex);
     return jvertices;
