@@ -1,4 +1,4 @@
-package com.rbodai.icellswapi.presentation.views
+package com.rbodai.icellswapi.presentation.views.common
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
@@ -90,3 +90,4 @@ fun ErrorMessage(error: String) {
         }
     }
 }
+

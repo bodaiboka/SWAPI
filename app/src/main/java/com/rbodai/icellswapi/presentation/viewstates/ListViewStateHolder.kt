@@ -1,9 +1,7 @@
 package com.rbodai.icellswapi.presentation.viewstates
 
-import com.rbodai.icellswapi.domain.model.Ship
-
-data class ShipsStateHolder(
+data class ListViewStateHolder<T> (
     val isLoading: Boolean = false,
-    val data: List<Ship>? = null,
+    val data: T? = null,
     val error: String = ""
 )

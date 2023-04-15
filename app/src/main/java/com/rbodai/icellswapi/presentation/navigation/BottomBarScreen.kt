@@ -10,6 +10,7 @@ sealed class BottomBarScreen(
     val title: String,
     val icon: ImageVector
 ) {
+
     object Planets : BottomBarScreen(
         route = "PLANETS",
         title = "Planets",
